@@ -28,6 +28,7 @@ const bodyParser = require('body-parser')
 const controllerMusica = require('./controller/musica/controllerMusica.js')
 const controllerArtista = require('./controller/artista/controllerArtista.js')
 const controllerUsuario = require('./controller/usuario/controllerUsuario.js')
+const controllerPlaylist = require('./controller/playlist/controllerPlaylist.js')
 
 //criando o  formato de dados que sera recebido no body da requisição (post/put)
 const bodyParserJSON = bodyParser.json()
@@ -49,6 +50,7 @@ app.use((request, response, next)=>{
 
 })
 
+//Função para adicionar música
 app.post('/v1/controle-musicas/musica', cors(), bodyParserJSON, async function (request, response) {
 
     //recebe ontentType da requisição para validar o formato de dados
@@ -64,19 +66,18 @@ app.post('/v1/controle-musicas/musica', cors(), bodyParserJSON, async function (
     
 })
 
-
+//Função para listar musicas
 app.get('/v1/controle-musicas/musica', cors(), async function (request, response) {
 
-    //Chama função para retornar uma lista de musicas
-    let result = await controllerMusica.listarMusica()
+     //chama a função para retornar uma lista de usuario
+     let result = await controllerMusica.listarMusica()
 
+     response.status(result.status_code)
+     response.json(result)
+ })
+ 
 
-    response.status(result.status_code)
-    response.json(result)
-
-
-})
-
+//Função para procurar a música pelo id 
 app.get('/v1/controle-musicas/musica/:id', cors(), async function (request, response) {
     
         let idMusica = request.params.id
@@ -87,6 +88,7 @@ app.get('/v1/controle-musicas/musica/:id', cors(), async function (request, resp
     
 })
 
+//Função para deletar uma música pelo id
 app.delete('/v1/controle-musicas/musica/:id', cors(), async function (request, response){
 
     let idMusica = request.params.id
@@ -98,7 +100,7 @@ app.delete('/v1/controle-musicas/musica/:id', cors(), async function (request, r
 })
 
 
-
+//Função para atualizar uma música pelo id
 app.put('/v1/controle-musicas/musica/:id', cors(), bodyParserJSON, async function (request, response){
 
     let contentType = request.headers['content-type']
@@ -253,4 +255,22 @@ app.delete('/v1/controle-musicas/artista/:id', cors(), async function(request, r
 
 app.listen(8080, function(){
     console.log('Servidor aguardando novas requisições...')
+})
+
+/****************************************************************************************************************
+ * END POINTS PARA PLAYLIST
+ ****************************************************************************************************************/
+//endpoint para inserir uma playlist
+app.post('/v1/controle-musicas/playlist', cors(), bodyParserJSON, async function(request, response){
+
+    //recebe o content type da requisição para validar o formato de dados
+    let contentType = request.headers['content-type']
+
+    //recebe os dados encaminhados no body da requisição
+    let dadosBody = request.body
+
+    let result = await controllerPlaylist.inserirPlaylist(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
 })

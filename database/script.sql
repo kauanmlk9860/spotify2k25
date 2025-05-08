@@ -26,6 +26,12 @@ create table tbl_artista(
   biografia varchar(250)
 );
 
+create table tbl_playlist(
+  id int primary key auto_increment,
+  titulo varchar(100) not null,
+  foto_capa varchar(200)
+);
+
 show tables;
 desc tbl_musica;
 select * from tbl_musica;
