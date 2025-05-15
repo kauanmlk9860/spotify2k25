@@ -29,7 +29,8 @@ const controllerMusica = require('./controller/musica/controllerMusica.js')
 const controllerArtista = require('./controller/artista/controllerArtista.js')
 const controllerUsuario = require('./controller/usuario/controllerUsuario.js')
 const controllerPlaylist = require('./controller/playlist/controllerPlaylist.js')
-
+const controllerStatus = require('./controller/status/controllerStatus.js')
+const controllerTipoPagamento = require('./controller/tipo_pagamento/controllerTipo_pagamento.js')
 //criando o  formato de dados que sera recebido no body da requisição (post/put)
 const bodyParserJSON = bodyParser.json()
 
@@ -307,6 +308,60 @@ app.get('/v1/controle-musicas/playlist/:id', cors(), async function(request, res
     let id = request.params.id
 
     let result = await controllerPlaylist.buscarPlaylist(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+/****************************************************************************************************************
+ * ENDPOINTS PARA STATUS
+ ****************************************************************************************************************/
+
+// Inserir um novo status
+app.post('/v1/controle-musicas/status', cors(), bodyParserJSON, async function(request, response) {
+    let contentType = request.headers['content-type']
+    let dadosBody = request.body
+
+    let result = await controllerStatus.inserirStatus(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+// Atualizar um status existente
+app.put('/v1/controle-musicas/status/:id', cors(), bodyParserJSON, async function(request, response) {
+    let contentType = request.headers['content-type']
+    let id = request.params.id
+    let dadosBody = request.body
+
+    let result = await controllerStatus.atualizarStatus(dadosBody, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+// Excluir um status existente
+app.delete('/v1/controle-musicas/status/:id', cors(), async function(request, response) {
+    let id = request.params.id
+
+    let result = await controllerStatus.excluirStatus(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+// Listar todos os status
+app.get('/v1/controle-musicas/status', cors(), async function(request, response) {
+    let result = await controllerStatus.listarStatus()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+// Buscar um status por ID
+app.get('/v1/controle-musicas/status/:id', cors(), async function(request, response) {
+    let id = request.params.id
+
+    let result = await controllerStatus.buscarStatus(id)
 
     response.status(result.status_code)
     response.json(result)

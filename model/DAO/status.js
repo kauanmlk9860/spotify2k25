@@ -2,67 +2,58 @@
  * Autor: Kauan Rodrigues 
  * Objetivo: Model responsável pelo CRUD de dados de status no banco de dados
  * Data: 15/05/2025
- * Versão: 1.0
+ * Versão: 1.1
  */
 
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
-// Função para inserir um novo status
+// Inserir um novo status
 const insertStatus = async function (status) {
     try {
-        let sql = `INSERT INTO tbl_status (
-                        descricao,
-                        concluido,
-                        aguardando
-                   ) VALUES (
-                        '${status.descricao}',
-                        '${status.concluido}',
-                        '${status.aguardando}'
-                   )`
+        let sql = `INSERT INTO tbl_status (status)
+                   VALUES ('${status.status}')`
 
         let result = await prisma.$executeRawUnsafe(sql)
 
-        return result ? true : false
+        return result > 0
     } catch (error) {
         console.log(error)
         return false
     }
 }
 
-// Função para atualizar um status existente
+// Atualizar um status existente
 const updateStatus = async function (status) {
     try {
         let sql = `UPDATE tbl_status SET
-                      descricao = '${status.descricao}',
-                      concluido = '${status.concluido}',
-                      aguardando = '${status.aguardando}'
+                      status = '${status.status}'
                    WHERE id = ${status.id}`
 
         let result = await prisma.$executeRawUnsafe(sql)
 
-        return result ? true : false
+        return result > 0
     } catch (error) {
         console.log(error)
         return false
     }
 }
 
-// Função para deletar um status pelo ID
+// Excluir um status por ID
 const deleteStatus = async function (id) {
     try {
         let sql = `DELETE FROM tbl_status WHERE id = ${id}`
 
         let result = await prisma.$executeRawUnsafe(sql)
 
-        return result ? true : false
+        return result > 0
     } catch (error) {
         console.log(error)
         return false
     }
 }
 
-// Função para retornar todos os status
+// Listar todos os status
 const selectAllStatus = async function () {
     try {
         let sql = `SELECT * FROM tbl_status ORDER BY id DESC`
@@ -76,7 +67,7 @@ const selectAllStatus = async function () {
     }
 }
 
-// Função para retornar um status por ID
+// Buscar um status por ID
 const selectStatusById = async function (id) {
     try {
         let sql = `SELECT * FROM tbl_status WHERE id = ${id}`
