@@ -258,18 +258,55 @@ app.listen(8080, function(){
 })
 
 /****************************************************************************************************************
- * END POINTS PARA PLAYLIST
+ * ENDPOINTS PARA PLAYLIST
  ****************************************************************************************************************/
-//endpoint para inserir uma playlist
-app.post('/v1/controle-musicas/playlist', cors(), bodyParserJSON, async function(request, response){
 
-    //recebe o content type da requisição para validar o formato de dados
+// Inserir uma nova playlist
+app.post('/v1/controle-musicas/playlist', cors(), bodyParserJSON, async function(request, response) {
     let contentType = request.headers['content-type']
-
-    //recebe os dados encaminhados no body da requisição
     let dadosBody = request.body
 
     let result = await controllerPlaylist.inserirPlaylist(dadosBody, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+// Atualizar uma playlist existente
+app.put('/v1/controle-musicas/playlist/:id', cors(), bodyParserJSON, async function(request, response) {
+    let contentType = request.headers['content-type']
+    let id = request.params.id
+    let dadosBody = request.body
+
+    let result = await controllerPlaylist.atualizarPlaylist(dadosBody, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+// Excluir uma playlist existente
+app.delete('/v1/controle-musicas/playlist/:id', cors(), async function(request, response) {
+    let id = request.params.id
+
+    let result = await controllerPlaylist.excluirPlaylist(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+// Listar todas as playlists
+app.get('/v1/controle-musicas/playlist', cors(), async function(request, response) {
+    let result = await controllerPlaylist.listarPlaylist()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+// Buscar uma playlist por ID
+app.get('/v1/controle-musicas/playlist/:id', cors(), async function(request, response) {
+    let id = request.params.id
+
+    let result = await controllerPlaylist.buscarPlaylist(id)
 
     response.status(result.status_code)
     response.json(result)
